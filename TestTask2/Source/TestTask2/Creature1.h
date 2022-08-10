@@ -76,4 +76,6 @@ private:
 	FTimerHandle moveForwardTimer;
 	FTimerHandle moveBackwardTimer;
 	FTimerHandle stopTimer;
+
+	bool bDisappearFlag;
 };

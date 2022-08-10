@@ -43,6 +43,8 @@ void ACreature1::BeginPlay()
 {
 	Super::BeginPlay();
 
+	bDisappearFlag = false;
+
 	if(SpawnEffect)
 	{
 		SpawnEffect->ActivateSystem();
@@ -115,7 +117,18 @@ void ACreature1::ChangeDestination()
 
 void ACreature1::Disappear()
 {
-	
+	if(DisappearEffect)
+	{
+		DisappearEffect->ActivateSystem();
+	}
+	if(DisappearSound)
+	{
+		if(showDebug)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Disappear sound shold be played"));
+		}
+		DisappearSound->Play();
+	}
 	
 	FTimerHandle destroyTimer;
 	GetWorldTimerManager().SetTimer(destroyTimer, this,  &ACreature1::Die, 5.0f, false);
@@ -150,17 +163,10 @@ void ACreature1::Tick(float DeltaTime)
 		UE_LOG(LogTemp, Warning, TEXT("Distance %f"), FVector::Distance(CurrentLocation, DestinationPoint->GetActorLocation()));
 	}
 	
-	if(FVector::Distance(CurrentLocation, DestinationPoint->GetActorLocation()) <= DestinationAccurency)
+	if((FVector::Distance(CurrentLocation, DestinationPoint->GetActorLocation()) <= DestinationAccurency) && !bDisappearFlag)
 	{
-		if(DisappearEffect)
-		{
-			DisappearEffect->ActivateSystem();
-		}
-		if(DisappearSound)
-		{
-			DisappearSound->Play();
-		}
-		Disappear();
+		bDisappearFlag = true;
+		Disappear();		
 	}
 }
 
